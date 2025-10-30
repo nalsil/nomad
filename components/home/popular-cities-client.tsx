@@ -21,7 +21,8 @@ export function PopularCitiesClient({ cities }: PopularCitiesClientProps) {
     // 지역 필터
     if (filters.region && filters.region !== "전체") {
       // TODO: 지역 매핑 로직 추가 필요
-      filtered = filtered.filter(city => city.country.includes(filters.region))
+      const region = filters.region
+      filtered = filtered.filter(city => city.country.includes(region))
     }
 
     // 예산 필터
