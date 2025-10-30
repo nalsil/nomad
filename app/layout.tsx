@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { Navigation } from "@/components/layout/navigation"
 import { Footer } from "@/components/layout/footer"
+import { FilterProvider } from "@/contexts/filter-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={inter.className}>
-        <Navigation />
-        <main>{children}</main>
-        <Footer />
+        <FilterProvider>
+          <Navigation />
+          <main>{children}</main>
+          <Footer />
+        </FilterProvider>
       </body>
     </html>
   )

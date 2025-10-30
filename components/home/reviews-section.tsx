@@ -1,11 +1,40 @@
-import { ArrowRight, ThumbsUp, MessageCircle, Share2, Star } from "lucide-react"
+import { ArrowRight, ThumbsUp, Star } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Progress } from "@/components/ui/progress"
-import { Button } from "@/components/ui/button"
-import { MOCK_REVIEWS } from "@/lib/constants"
+import type { ReviewWithRelations } from "@/lib/supabase/types"
 
-export function ReviewsSection() {
+interface ReviewsSectionProps {
+  initialReviews: ReviewWithRelations[]
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
+
+  if (diffInHours < 1) return '방금 전'
+  if (diffInHours < 24) return `${diffInHours}시간 전`
+  if (diffInHours < 48) return '1일 전'
+
+  return date.toLocaleDateString('ko-KR')
+}
+
+export function ReviewsSection({ initialReviews }: ReviewsSectionProps) {
+  if (!initialReviews || initialReviews.length === 0) {
+    return (
+      <section className="py-16 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold flex items-center gap-2 mb-8">
+            ✍️ 최신 리뷰
+          </h2>
+          <div className="text-center py-12 text-muted-foreground">
+            아직 리뷰가 없습니다. 첫 리뷰를 작성해보세요!
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="py-16 bg-muted/50">
       <div className="container mx-auto px-4">
@@ -13,34 +42,27 @@ export function ReviewsSection() {
           <h2 className="text-3xl font-bold flex items-center gap-2">
             ✍️ 최신 리뷰
           </h2>
-          <button
-            disabled
-            className="text-sm font-medium text-muted-foreground cursor-not-allowed flex items-center gap-1 opacity-60"
-          >
-            더 많은 리뷰
-            <ArrowRight className="h-4 w-4" />
-          </button>
         </div>
 
         <div className="space-y-6">
-          {MOCK_REVIEWS.map((review) => (
+          {initialReviews.map((review) => (
             <Card key={review.id}>
               <CardContent className="p-6">
                 <div className="flex items-start gap-4 mb-4">
                   <Avatar className="h-12 w-12">
-                    <AvatarImage src={review.author.avatarUrl} />
-                    <AvatarFallback>{review.author.username[0].toUpperCase()}</AvatarFallback>
+                    <AvatarImage src={review.profiles.avatar_url || undefined} />
+                    <AvatarFallback>
+                      {review.profiles.username?.[0]?.toUpperCase() || 'U'}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold">@{review.author.username}</span>
+                      <span className="font-semibold">@{review.profiles.username || 'Anonymous'}</span>
                       <span className="text-sm text-muted-foreground">·</span>
-                      <span className="text-sm text-muted-foreground">{review.author.job}</span>
-                      <span className="text-sm text-muted-foreground">·</span>
-                      <span className="text-sm text-muted-foreground">{review.createdAt}</span>
+                      <span className="text-sm text-muted-foreground">{formatDate(review.created_at)}</span>
                     </div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-sm font-medium">📍 {review.cityName}</span>
+                      <span className="text-sm font-medium">📍 {review.cities.name_ko}</span>
                       <span className="text-sm text-muted-foreground">·</span>
                       <div className="flex items-center gap-1">
                         {[...Array(5)].map((_, i) => (
@@ -55,51 +77,26 @@ export function ReviewsSection() {
                         ))}
                         <span className="text-sm font-medium ml-1">{review.rating}</span>
                       </div>
-                      <span className="text-sm text-muted-foreground">·</span>
-                      <span className="text-sm text-muted-foreground">{review.duration} 거주</span>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-base mb-4 font-medium">&ldquo;{review.summary}&rdquo;</p>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-muted-foreground">💰 가성비</span>
-                      <span className="text-sm font-medium">{review.categoryRatings.value.toFixed(1)}</span>
-                    </div>
-                    <Progress value={review.categoryRatings.value * 20} />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-muted-foreground">📡 인터넷</span>
-                      <span className="text-sm font-medium">{review.categoryRatings.internet.toFixed(1)}</span>
-                    </div>
-                    <Progress value={review.categoryRatings.internet * 20} />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-muted-foreground">☕ 카페</span>
-                      <span className="text-sm font-medium">{review.categoryRatings.cafe.toFixed(1)}</span>
-                    </div>
-                    <Progress value={review.categoryRatings.cafe * 20} />
-                  </div>
-                </div>
+                {review.title && (
+                  <h3 className="text-lg font-semibold mb-2">{review.title}</h3>
+                )}
+                <p className="text-base mb-4">{review.content}</p>
 
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <button className="flex items-center gap-1 hover:text-primary transition-colors">
+                  <div className="flex items-center gap-1">
                     <ThumbsUp className="h-4 w-4" />
-                    <span>{review.likes}</span>
-                  </button>
-                  <button className="flex items-center gap-1 hover:text-primary transition-colors">
-                    <MessageCircle className="h-4 w-4" />
-                    <span>{review.comments}</span>
-                  </button>
-                  <button className="flex items-center gap-1 hover:text-primary transition-colors">
-                    <Share2 className="h-4 w-4" />
-                    <span>공유</span>
-                  </button>
+                    <span>{review.likes_count}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span>👎 {review.dislikes_count}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span>💡 도움돼요 {review.helpful_count}</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>

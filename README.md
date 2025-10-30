@@ -1,36 +1,90 @@
-# 한국노마드 (Korean Nomad) - 홈페이지
+# 🌏 Nomad - 디지털 노마드를 위한 도시 추천 플랫폼
 
-대한민국 디지털 노마드를 위한 올인원 플랫폼 홈페이지
+한국어 디지털 노마드들을 위한 최적의 도시를 찾아주는 웹 플랫폼입니다.
 
-## 🎯 프로젝트 개요
+## ✨ 주요 기능
 
-328명의 디지털 노마드가 직접 평가한 50개 도시 정보를 제공하는 플랫폼입니다. 원격으로 일하며 살기 좋은 곳을 찾고, 커뮤니티에 참여할 수 있습니다.
+- 🏙️ **도시 탐색**: 전 세계 디지털 노마드 친화적인 도시 정보
+- ⭐ **리뷰 시스템**: 실제 노마드들의 생생한 경험 공유
+- 📊 **랭킹 시스템**: 물가, 인터넷, 안전도, 날씨 등 다양한 기준으로 도시 비교
+- 🔍 **스마트 필터**: 예산, 지역, 환경 등 맞춤형 도시 검색
+- 📈 **실시간 통계**: 사용자 수, 리뷰 수 등 플랫폼 통계
+- 👥 **커뮤니티**: 노마드들 간의 정보 공유 및 소통
 
-## 🚀 시작하기
+## 🛠️ 기술 스택
 
-### 개발 서버 실행
-
-```bash
-npm install
-npm run dev
-```
-
-브라우저에서 [http://localhost:3000](http://localhost:3000) 을 열어 결과를 확인하세요.
-
-### 빌드
-
-```bash
-npm run build
-npm start
-```
-
-## 📦 기술 스택
-
+### Frontend
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **UI Components**: Shadcn UI
+- **UI Components**: shadcn/ui
 - **Icons**: Lucide React
+
+### Backend
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Storage**: Supabase Storage (이미지 등)
+- **Real-time**: Supabase Realtime (향후 구현)
+
+### 기타
+- **Deployment**: Vercel (권장)
+- **Package Manager**: npm
+
+## 📦 설치 및 실행
+
+### 사전 요구사항
+
+- Node.js 18.0 이상
+- npm 또는 yarn
+- Supabase 계정 (무료)
+
+### 1. 저장소 클론
+
+```bash
+git clone https://github.com/your-username/nomad.git
+cd nomad
+```
+
+### 2. 의존성 설치
+
+```bash
+npm install
+```
+
+### 3. Supabase 설정
+
+**상세한 설정 가이드는 [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)를 참조하세요.**
+
+#### 요약:
+
+1. [Supabase](https://supabase.com)에서 새 프로젝트 생성
+2. SQL Editor에서 `supabase/migrations/001_initial_schema.sql` 실행
+3. `supabase/seed.sql` 실행하여 샘플 데이터 삽입
+4. `.env.local` 파일 생성 및 환경 변수 설정
+
+### 4. 환경 변수 설정
+
+`.env.local.example`을 복사하여 `.env.local` 파일 생성:
+
+```bash
+cp .env.local.example .env.local
+```
+
+다음 값들을 Supabase Dashboard에서 가져와 입력:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+### 5. 개발 서버 실행
+
+```bash
+npm run dev
+```
+
+브라우저에서 [http://localhost:3000](http://localhost:3000) 접속
 
 ## 🎨 주요 기능
 
